@@ -1,29 +1,27 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import axios from "axios";
 
-export default function Leaderboard() {
+const Leaderboard = () => {
   const [leaders, setLeaders] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/leaderboard")
-      .then((res) => res.json())
-      .then(setLeaders);
+    axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/leaderboard`).then((res) => {
+      setLeaders(res.data);
+    });
   }, []);
 
   return (
-    <div className="p-8 bg-gradient-to-r from-purple-100 to-blue-100 min-h-screen">
-      <div className="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow">
-        <h1 className="text-3xl font-bold mb-6 text-center">Leaderboard</h1>
-        <ul className="space-y-3">
-          {leaders.map((user, idx) => (
-            <li key={idx} className="bg-gray-100 p-4 rounded shadow-sm flex justify-between items-center">
-              <span className="font-semibold">{idx + 1}. {user.name}</span>
-              <span className="text-blue-600 font-medium">₹{user.totalDonations}</span>
-            </li>
-          ))}
-        </ul>
-        <Link to="/dashboard" className="block mt-6 text-center text-blue-500 hover:underline">← Back to Dashboard</Link>
-      </div>
+    <div>
+      <h1>Leaderboard</h1>
+      <ol>
+        {leaders.map((user, index) => (
+          <li key={index}>
+            {user.name} - ₹{user.totalDonations}
+          </li>
+        ))}
+      </ol>
     </div>
   );
-}
+};
+
+export default Leaderboard;
